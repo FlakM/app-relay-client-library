@@ -1,7 +1,7 @@
 use std::{cell::RefCell, error::Error, slice};
 
 use libc::{c_char, c_int};
-use log::error;
+use log::{error, info};
 
 thread_local! {
     static LAST_ERROR: RefCell<Option<Box<dyn Error>>> = RefCell::new(None);
@@ -10,6 +10,7 @@ thread_local! {
 #[no_mangle]
 pub extern "C" fn initialize_logging() {
     env_logger::init();
+    info!("Logger initialized");
 }
 
 
