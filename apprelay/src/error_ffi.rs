@@ -3,16 +3,19 @@ use std::{cell::RefCell, error::Error, slice};
 use libc::{c_char, c_int};
 use log::{error, info};
 
+use env_logger::{Builder, Target};
+
 thread_local! {
     static LAST_ERROR: RefCell<Option<Box<dyn Error>>> = RefCell::new(None);
 }
 
 #[no_mangle]
 pub extern "C" fn initialize_logging() {
-    env_logger::init();
+    let mut builder = Builder::from_default_env();
+    builder.target(Target::Stdout);
+    builder.init();
     info!("Logger initialized");
 }
-
 
 /// Update the last error, clearing the old one.
 pub fn update_last_error<E: Error + 'static>(err: E) {
