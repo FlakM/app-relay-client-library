@@ -7,6 +7,12 @@ thread_local! {
     static LAST_ERROR: RefCell<Option<Box<dyn Error>>> = RefCell::new(None);
 }
 
+#[no_mangle]
+pub extern "C" fn initialize_logging() {
+    env_logger::init();
+}
+
+
 /// Update the last error, clearing the old one.
 pub fn update_last_error<E: Error + 'static>(err: E) {
     error!("Setting last error {err}");
@@ -58,7 +64,7 @@ pub unsafe extern "C" fn last_error_message(buffer: *mut c_char, length: c_int) 
         None => return 0,
     };
 
-    let error_message = last_error.to_string();
+    let error_message = format!("my error {:?}", last_error);
 
     let buffer = slice::from_raw_parts_mut(buffer as *mut u8, length as usize);
 
