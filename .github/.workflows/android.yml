@@ -1,0 +1,48 @@
+name: Android
+
+on:
+  push:
+    branches:    
+      - '*'         # matches every branch that doesn't contain a '/'
+
+jobs:
+  instrumented_tests:
+    name: Run Instrumented Tests
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Save logcat output
+        uses: actions/upload-artifact@master
+        if: failure()
+        with:
+          name: logcat
+          path: artifacts/logcat.log
+      - name: checkout
+        uses: actions/checkout@v2
+      - name: rust toolchain setup
+        uses: actions-rs/toolchain@v1
+        with:
+          toolchain: stable
+
+      - name: install cargo ndk
+        uses: actions-rs/cargo@v1
+        with:
+          command: install
+          args: cargo-ndk
+      - name: setup build targets
+        run: rustup target add aarch64-linux-android armv7-linux-androideabi x86_64-linux-android i686-linux-android
+
+      - name: build all targets
+        run: |
+          cargo ndk \
+            -t armeabi-v7a \
+            -t arm64-v8a \
+            -t x86 \
+            -t x86_64 \
+            -o ./target/jniLibs build --profile release-space-optimized || true
+
+      - name: Android libs
+        uses: actions/upload-artifact@v2
+        with:
+          name: android-libs
+          path: ./target/jniLibs 
