@@ -36,11 +36,13 @@ jobs:
           for i in "${arches[@]}"
           do
              echo "building for arch $i"
-             cargo build --release --target $i
+             cargo build --target $i \
+                --no-default-features \
+                --profile release-space-optimized
              dir="./target/ios_libs/$i"
              mkdir -p "$dir"
-             ls -al ./target/$i/release/
-             cp ./target/$i/release/apprelay.{dylib,so} "$dir" || true
+             ls -al ./target/$i/release-space-optimized/
+             cp ./target/$i/release-space-optimized/libapprelay.{dylib,so} "$dir" || true
           done
 
 
