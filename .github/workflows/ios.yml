@@ -29,7 +29,7 @@ jobs:
 
       - name: build all targets
         run: |
-          declare -a arches=("x86_64-apple-ios" "aarch64-apple-ios" "x86_64-apple-ios" )
+          declare -a arches=("x86_64-apple-ios" "aarch64-apple-ios" "x86_64-apple-ios" "aarch64-apple-ios-sim" )
           for i in "${arches[@]}"
           do
              rustup target add $i
