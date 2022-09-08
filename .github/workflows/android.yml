@@ -6,7 +6,7 @@ on:
       - '*'         # matches every branch that doesn't contain a '/'
 
 jobs:
-  instrumented_tests:
+  build-android-libraries:
     name: Run Instrumented Tests
     runs-on: ubuntu-latest
 
@@ -40,6 +40,12 @@ jobs:
             -t x86 \
             -t x86_64 \
             -o ./target/jniLibs build --profile release-space-optimized || true
+          rm -r ./target/jnilibs
+          mkdir -p ./target/jnilibs/{armeabi-v7a,arm64-v8a,x86,x86_64}
+          cp ./target/armv7-linux-androideabi/release-space-optimized/libapprelay.so ./target/jniLibs/armeabi-v7a/libapprelay.so
+          cp ./target/aarch64-linux-android/release-space-optimized/libapprelay.so ./target/jniLibs/arm64-v8a/libapprelay.so
+          cp ./target/i686-linux-android/release-space-optimized/libapprelay.so ./target/jniLibs/x86/libapprelay.so
+          cp ./target/x86_64-linux-android/release-space-optimized/libapprelay.so ./target/jniLibs/x86_64/libapprelay.so
 
       - name: Android libs
         uses: actions/upload-artifact@v2
