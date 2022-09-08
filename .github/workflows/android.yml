@@ -42,7 +42,7 @@ jobs:
             -o ./target/jniLibs build --profile release-space-optimized || true
           rm -r ./target/jnilibs || true
           mkdir -p ./target/jnilibs/{armeabi-v7a,arm64-v8a,x86,x86_64}
-          ll -a ./target
+          ls -al ./target
           cp ./target/armv7-linux-androideabi/release-space-optimized/libapprelay.so ./target/jniLibs/armeabi-v7a/libapprelay.so
           cp ./target/aarch64-linux-android/release-space-optimized/libapprelay.so ./target/jniLibs/arm64-v8a/libapprelay.so
           cp ./target/i686-linux-android/release-space-optimized/libapprelay.so ./target/jniLibs/x86/libapprelay.so

@@ -39,7 +39,8 @@ jobs:
              cargo build --release --target $i
              dir="./target/ios_libs/$i"
              mkdir -p "$dir"
-             cp target/$i/release/libapprelay.{dylib,so} "$dir" || true
+             ls -al ./target/
+             cp ./target/$i/release/libapprelay.{dylib,so} "$dir" || true
           done
 
 
