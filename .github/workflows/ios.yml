@@ -28,11 +28,11 @@ jobs:
         run: xcrun --show-sdk-build-version
 
       - name: setup build targets
-        run: rustup target add aarch64-apple-ios x86_64-apple-darwin
+        run: rustup target add aarch64-apple-ios x86_64-apple-ios
 
       - name: build all targets
         run: |
-          declare -a arches=("x86_64-apple-darwin" "aarch64-apple-darwin" )
+          declare -a arches=("x86_64-apple-ios" "aarch64-apple-ios" )
           for i in "${arches[@]}"
           do
              echo "building for arch $i"
