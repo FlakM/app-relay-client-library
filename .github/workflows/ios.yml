@@ -1,0 +1,50 @@
+name: IOS
+
+on:
+  push:
+    branches:    
+      - '*'         # matches every branch that doesn't contain a '/'
+
+jobs:
+  build-ios-libraries:
+    name: Build ios libraries
+    runs-on: macos-latest
+
+    steps:
+      - name: Save logcat output
+        uses: actions/upload-artifact@master
+        if: failure()
+        with:
+          name: logcat
+          path: artifacts/logcat.log
+      - name: checkout
+        uses: actions/checkout@v2
+      - name: rust toolchain setup
+        uses: actions-rs/toolchain@v1
+        with:
+          toolchain: stable
+
+      - name: ensure we have xcode installed
+        run: xcrun --show-sdk-build-version
+
+      - name: setup build targets
+        run: rustup target add aarch64-apple-ios x86_64-apple-darwin
+
+      - name: build all targets
+        run: |
+          declare -a arches=("x86_64-apple-darwin" "aarch64-apple-darwin" )
+          for i in "${arches[@]}"
+          do
+             echo "building for arch $i"
+             cargo build --release --target $i
+             dir="./target/ios_libs/$i"
+             mkdir -p "$dir"
+             cp target/$i/release/libapprelay.{dylib,so} "$dir" || true
+          done
+
+
+      - name: Ios libs
+        uses: actions/upload-artifact@v2
+        with:
+          name: ios-libs
+          path: ./target/ios_libs/

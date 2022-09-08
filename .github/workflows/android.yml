@@ -7,7 +7,7 @@ on:
 
 jobs:
   build-android-libraries:
-    name: Run Instrumented Tests
+    name: Build android libraries
     runs-on: ubuntu-latest
 
     steps:
@@ -40,7 +40,7 @@ jobs:
             -t x86 \
             -t x86_64 \
             -o ./target/jniLibs build --profile release-space-optimized || true
-          rm -r ./target/jnilibs
+          rm -r ./target/jnilibs || true
           mkdir -p ./target/jnilibs/{armeabi-v7a,arm64-v8a,x86,x86_64}
           cp ./target/armv7-linux-androideabi/release-space-optimized/libapprelay.so ./target/jniLibs/armeabi-v7a/libapprelay.so
           cp ./target/aarch64-linux-android/release-space-optimized/libapprelay.so ./target/jniLibs/arm64-v8a/libapprelay.so
