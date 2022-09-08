@@ -27,14 +27,12 @@ jobs:
       - name: ensure we have xcode installed
         run: xcrun --show-sdk-build-version
 
-      - name: setup build targets
-        run: rustup target add aarch64-apple-ios x86_64-apple-ios
-
       - name: build all targets
         run: |
-          declare -a arches=("x86_64-apple-ios" "aarch64-apple-ios" )
+          declare -a arches=("x86_64-apple-ios" "aarch64-apple-ios" "x86_64-apple-ios" )
           for i in "${arches[@]}"
           do
+             rustup target add $i
              echo "building for arch $i"
              cargo build --target $i \
                 --no-default-features \
@@ -42,12 +40,25 @@ jobs:
              dir="./target/ios_libs/$i"
              mkdir -p "$dir"
              ls -al ./target/$i/release-space-optimized/
-             cp ./target/$i/release-space-optimized/libapprelay.{dylib,so} "$dir" || true
+             cp ./target/$i/release-space-optimized/libapprelay.{dylib,so,a} "$dir" || true
           done
+
+      - name: package
+        run: |
+          mkdir include
+          cp apprelay/apprelay.h include
+          xcodebuild -create-xcframework \
+            -library target/aarch64-apple-ios/release-space-optimized/libapprelay.a -headers include \
+            -library target/aarch64-apple-ios-sim/release-space-optimized/libapprelay.a -headers include \
+            -output LibAppRelay.xcframework
+          lipo -create target/aarch64-apple-ios-sim/release-space-optimized/libapprelay.a \
+             target/x86_64-apple-ios/release-space-optimized/libapprelay.a \
+             -output LibAppRelay.xcframework/ios-arm64-simulator/libapprelay.a
+          zip -vr LibAppRelay.xcframework.zip LibAppRelay.xcframework
 
 
       - name: Ios libs
         uses: actions/upload-artifact@v2
         with:
           name: ios-libs
-          path: ./target/ios_libs/
+          path: LibAppRelay.xcframework.zip
