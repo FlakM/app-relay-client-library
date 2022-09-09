@@ -8,10 +8,13 @@ on:
       - 'v*'        # matches every tag starting from 'v' 
 
 jobs:
-
   build-android-libraries:
     name: Build android libraries
     runs-on: ubuntu-latest
+    # Map a step output to a job output
+    outputs:
+      jni_hashes: ${{ steps.vars.outputs.jni_libs_sha }}
+      jni_all_hashes: ${{ steps.vars.outputs.all_jni_libs_sha }}
 
     steps:
       - name: Save logcat output
@@ -74,6 +77,8 @@ jobs:
   build-ios-libraries:
     name: Build ios libraries
     runs-on: macos-latest
+    outputs:
+      hashes: ${{ steps.vars.outputs.ios_sha }}
 
     steps:
       - name: Save logcat output
@@ -143,9 +148,9 @@ jobs:
       - name: Generate hashes 
         if: startsWith(github.ref, 'refs/tags/v')
         run: |
-          echo ${{ steps.vars.outputs.ios_sha }} >> hashes.txt
-          echo ${{ steps.vars.outputs.jni_libs_sha }} >> hashes.txt
-          echo ${{ steps.vars.outputs.all_jni_libs_sha }} >> hashes.txt
+          echo ${{  needs.build-ios-libraries.outputs.hashes }} >> hashes.txt
+          echo ${{  needs.build-android-libraries.outputs.jni_hashes }} >> hashes.txt
+          echo ${{  needs.build-android-libraries.outputs.jni_all_hashes }} >> hashes.txt
 
       - name: Upload asset hashes
         if: startsWith(github.ref, 'refs/tags/v')
