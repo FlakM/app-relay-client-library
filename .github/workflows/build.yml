@@ -154,9 +154,9 @@ jobs:
       - name: Generate hashes 
         if: startsWith(github.ref, 'refs/tags/v')
         run: |
-          echo ${{  needs.build-ios-libraries.outputs.hashes }} >> hashes.txt
-          echo ${{  needs.build-android-libraries.outputs.jni_hashes }} >> hashes.txt
-          echo ${{  needs.build-android-libraries.outputs.jni_all_hashes }} >> hashes.txt
+          echo "${{  needs.build-ios-libraries.outputs.hashes }}" >> hashes.txt
+          echo "${{  needs.build-android-libraries.outputs.jni_hashes }}" >> hashes.txt
+          echo "${{  needs.build-android-libraries.outputs.jni_all_hashes }}" >> hashes.txt
 
       - name: Upload asset hashes
         if: startsWith(github.ref, 'refs/tags/v')
