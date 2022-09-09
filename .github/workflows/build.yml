@@ -7,6 +7,8 @@ on:
     tags:
       - 'v*'        # matches every tag starting from 'v' 
 
+jobs:
+
   create-release:
     name: Create Release
     runs-on: ubuntu-latest
