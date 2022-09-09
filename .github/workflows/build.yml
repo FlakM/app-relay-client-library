@@ -63,7 +63,12 @@ jobs:
         id: vars
         run: |
           echo ::set-output name=jni_libs_sha::$(sha256sum target/jniLibs/jniLibs.tar.gz)
+          # https://github.com/orgs/community/discussions/26288#discussioncomment-3251220
           sums="$(sha256sum ./target/jniLibs/**/*.so)"
+          sums="${sums//'%'/'%25'}"
+          sums="${sums//$'\n'/'%0A'}"
+          sums="${sums//$'\r'/'%0D'}"
+
           echo ::set-output name=all_jni_libs_sha::"$sums"
  
       - name: Upload android binaries to release
