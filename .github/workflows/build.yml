@@ -92,6 +92,7 @@ jobs:
   build-ios-libraries:
     name: Build ios libraries
     runs-on: macos-latest
+    needs: create-release
 
     steps:
       - name: Save logcat output
