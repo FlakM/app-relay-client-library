@@ -26,8 +26,6 @@ jobs:
           release_name: ${{ github.ref }}
           draft: true
           prerelease: false
-      - name: Empty step
-        run: echo done
 
   build-android-libraries:
     name: Build android libraries
