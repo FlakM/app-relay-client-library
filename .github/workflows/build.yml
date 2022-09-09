@@ -26,6 +26,8 @@ jobs:
           release_name: ${{ github.ref }}
           draft: true
           prerelease: false
+      - name: Empty step
+        run: echo done
 
   build-android-libraries:
     name: Build android libraries
@@ -71,7 +73,6 @@ jobs:
 
       - name: Create tarball
         if: startsWith(github.ref, 'refs/tags/v')
-        uses: master-atul/tar-action@v1.0.2
         run: |
           cd ./target/jniLibs
           tar -czvf jniLibs.tar.gz *
